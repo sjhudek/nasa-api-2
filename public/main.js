@@ -1,17 +1,13 @@
 $(document).ready(function () {
     var nasa = 'https://api.nasa.gov/neo/rest/v1/feed?start_date=2017-10-17&end_date=2017-10-24&api_key=jkFSPoYMf5xZc4YSiG24QzOEJBLThffnE7R43vbd'
 
- 
-
     $('#searchNasa').on('submit', function(event){
         event.preventDefault()
-        
-        var nasa2 = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${$('#startDate').val()}&end_date=${$('#endDate').val()}&api_key=jkFSPoYMf5xZc4YSiG24QzOEJBLThffnE7R43vbd`
-
+    
         $('#startDate').val();
 
-        $.get(nasa2, function (data) {
-	        console.log(data);
+        $.get(`/asteroids?start_date=${$('#startDate').val()}&end_date=${$('#endDate').val()}`, function (data) {
+            data = JSON.parse(data);
 	        console.log(data.near_earth_objects);
 	        for (var day in data.near_earth_objects) {
 		      for(var i = 0; i < data.near_earth_objects[day].length; i++) {

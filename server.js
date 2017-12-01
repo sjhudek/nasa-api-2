@@ -8,6 +8,9 @@ var request = require('request');
 
 var app = express();
 
+var nasa2 = `https://api.nasa.gov/neo/rest/v1/feed?api_key=jkFSPoYMf5xZc4YSiG24QzOEJBLThffnE7R43vbd`
+
+
 app.use(bodyParser.urlencoded({
 
 	extended: true
@@ -17,29 +20,41 @@ app.use(bodyParser.json());
 
 app.use(express.static('./public'));
 
-// this will never run becuase the static middleware above will take care of this
-app.get('/', function(request, response){
+// this will never run becuase the static middleware above will take care of thi
+
+app.get('/', function(req, res){
 	response.sendFile('./public/index.html');
 });
 
-app.get('/about', function(request, response){
-	response.send("This is about me -- Steve!!!!!");
+app.get('/asteroids', function(req, res){
+	var querystr = nasa2 + '&start_date=' + req.query.start_date + '&end_date=' + req.query.end_date
+	request(querystr, function(error, response, body) {
+	  console.log('error:', error); // Print the error if one occurred
+	  console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+	  console.log('body:', body); // Print the HTML for the Google homepage.
+  	  res.send(body);
+
+});
+});
+
+app.get('/about', function(req, res){
+	res.send("This is about me -- Steve!!!!!");
 });
 
 // this post route handles our form submission
-// <form method="POST" action="/form-submit"
-app.post('/form-submit', function(request, response){
-	console.log('received a post request');
-	// i'd usually rather redirect after a post request
-	// response.send('Received the post request');
+// <form method="POST" action="/form-submit">
+app.post('/form-submit', function(req, res){
+	console.log('received a post req');
+	// i'd usually rather redirect after a post req
+	// res.send('Received the post request');
 
-	// response.redirect forces the browser to send
-	response.redirect('/about');
+	// res.redirect forces the browser to send
+	res.redirect('/about');
 })
 
 
-app.use(function(request, response){
-	response.send('404');
+app.use(function(req, res){
+	res.send('404');
 })
 
 app.listen(8080, function(){
